@@ -1,0 +1,7 @@
+1. maybe shrink the size of graph when edges/vertices are removed
+2. integrate the weight into graph?
+3. implement weighted graph, such that adjacency list is of the form:
+   ((x . w1) (y . w2) (z . w3) ...)
+4. shortest path for weighted graph
+5. watch out for negative weights
+6. return SCC and CC in lists or in separate graphs?
