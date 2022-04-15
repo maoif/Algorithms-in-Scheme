@@ -16,6 +16,23 @@
 
 (include "../mics/shuffle.ss")
 
+;; stack.ss
+(define test-stack
+  (lambda ()
+    (define s1 (make-stack (string->list "Scheme is a beautiful language.") char=?))
+    (define s2 (make-stack))
+    (printf "s1: ~a~n" (stack-pop!-until s1 #\x))
+
+    (stack-push! s2 7)
+    (stack-push! s2 4)
+    (stack-push! s2 8)
+    (stack-push! s2 0)
+    (stack-push! s2 2)
+    (stack-push! s2 3)
+    (stack-pop!-unti s2 4)
+    (printf "s2: ~a~n")
+    ))
+
 ;; heap.ss
 (define test-heap
   (lambda ()

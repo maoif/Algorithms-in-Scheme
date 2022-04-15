@@ -6,6 +6,9 @@
         (vector-set! v i (random range)))
       v)))
 
+;; iteration:
+;; (proc index element)
+
 (define iterate
   (lambda (ls proc)
     (do ([i 0 (add1 i)]

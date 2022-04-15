@@ -8,6 +8,8 @@ w*: a list of weights
 v*: a list of values
 n*: a list of number of items
 
+
+TODO test
 |#
 
 (include "../tools.ss")

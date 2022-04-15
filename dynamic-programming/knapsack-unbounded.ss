@@ -6,6 +6,9 @@ Knapsack (unbounded)
 cap: total capacity
 w*: a list of weights
 v*: a list of values
+
+TODO test
+
 |#
 
 (include "../tools.ss")
