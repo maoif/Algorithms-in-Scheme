@@ -23,6 +23,7 @@
     (define s2 (make-stack))
     (printf "s1: ~a~n" (stack-pop!-until s1 #\x))
 
+    (printf "s2: ~a~n")
     (stack-push! s2 7)
     (stack-push! s2 4)
     (stack-push! s2 8)

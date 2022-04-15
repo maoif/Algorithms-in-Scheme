@@ -2,11 +2,11 @@
 Infix Calculator
 
 ;;; Implementation
-This procedure uses the Shunting-Yard algorithm to evaluate
-arithmetic expressions.
+This procedure uses the Shunting-Yard algorithm to evaluate arithmetic
+expressions.
 
-Permitted operations are: + - * / ^(exponent) !(factorial),
-%(mod), parentheses are allowed.
+Permitted operations are: + - * / ^(exponent) !(factorial), %(mod),
+parentheses are allowed.
 
 When encountering '-' as negation, we add a '0' in the operand stream.
 
@@ -15,7 +15,7 @@ Numbers cannot start with '0' except for 0 itself.
 Whitespace is ignored.
 
 TODO
-1. error handling, e.g., "3+-3", "32 54 + 3 3" (error or feature?)
+1. more error handling, e.g., "3+-3", "32 54 + 3 3" (error or feature?)
 2. decimal point
 
 |#
@@ -130,7 +130,7 @@ TODO
                               ;; When - appears at the beginning or immediately after a
                               ;; left paren, it's negation, we explicitly put a zero to avoid
                               ;; using a different symbol for it.
-                              ;; In (3-5), when at '-', the stack top is '(', do this only
+                              ;; In (3-5), when at '-', the stack top is '(',  so add 0 only
                               ;; when num is "".
                               (begin (stack-push! ops c)
                                      (loop (add1 i) (cdr in) (append out '(0)) ""))
@@ -144,16 +144,14 @@ TODO
                                       (loop (add1 i) (cdr in) (append out `(,(string->number num))) ""))
                                     ;; ops on stack have higher or equal precedence, pop them
                                     ;; first, then push the current one on the stack
-                                    (begin
-                                      (let ([op* (let pop ([popped (cons (stack-pop! ops) '())])
-                                                   ;; prio('(')=0, so it won't be popped
-                                                   (if (or (stack-empty? ops) (< (get-prio (stack-peek ops)) p))
-                                                       (reverse popped)
-                                                       (pop (cons (stack-pop! ops) popped))))])
-                                        (stack-push! ops c)
-                                        (loop (add1 i) (cdr in)
-                                              (append (append out `(,(string->number num))) op*)
-                                              ""))))))])))))))
+                                    (let ([op* (let pop ([popped (cons (stack-pop! ops) '())])
+                                                 ;; prio('(')=0, so it won't be popped
+                                                 (if (or (stack-empty? ops) (< (get-prio (stack-peek ops)) p))
+                                                     (reverse popped)
+                                                     (pop (cons (stack-pop! ops) popped))))])
+                                      (stack-push! ops c)
+                                      (loop (add1 i) (cdr in)
+                                            (append (append out `(,(string->number num))) op*) "")))))])))))))
           (valid-chars?)
           (valid-parens?)
           (evaluate (to-RPN)))

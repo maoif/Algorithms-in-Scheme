@@ -94,3 +94,4 @@ or (t-set! d1 ... v) to set the value of t[d1...] to v.
 ;;   (lambda ()))
 ;; (define table-iterate
 ;;   (lambda ()))
+;; table-D
