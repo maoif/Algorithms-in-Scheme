@@ -27,22 +27,32 @@ TODO
   (lambda (s)
     (if (and (string? s) (not (string=? "" s)))
         (let ([s* (string->list s)])
+          (define fact
+            (lambda (n)
+              (if (and (integer? n) (>= n 0))
+                  (let f ([res 1]
+                          [n n])
+                    (if (= n 0)
+                        res
+                        (f (* res n) (sub1 n))))
+                  (errorf "calc" "factorial cannot work on ~a" n))))
           ;; (op priority arity)
-          (define operators '((#\( 0 0) (#\) 5 0) (#\+ 1 2) (#\- 1 2) (#\* 2 2)
-                              (#\/ 2 2) (#\% 2 2) (#\^ 3 2) (#\! 4 1)))
+          (define operators `((#\( 0 0) (#\) 5 0) (#\+ 1 2 ,+) (#\- 1 2 ,-) (#\* 2 2 ,*)
+                              (#\/ 2 2 ,/) (#\% 2 2 ,modulo) (#\^ 3 2 ,expt) (#\! 4 1 ,fact)))
           (define numbers '(#\0 #\1 #\2 #\3 #\4 #\5 #\6 #\7 #\8 #\9))
           ;; cddr: exclude parens
           (define is-op? (lambda (c) (memq c (map car (cddr operators)))))
           (define is-num? (lambda (c) (memq c numbers)))
+          (define get-op (lambda (c) (cadddr (assoc c operators))))
           (define get-prio (lambda (c) (cadr (assoc c operators))))
           (define get-arity (lambda (c) (caddr (assoc c operators))))
-          (define valid-chars?
+          (define check-chars
             (lambda ()
               (let ([c* `(,@(map car operators) ,@numbers #\space)])
                 (iterate s* (lambda (i c)
                               (unless (memq c c*)
                                 (errorf "calc" "invalid char ~a at position ~a in ~a" c i s)))))))
-          (define valid-parens?
+          (define check-parens
             (lambda ()
               (let ([p* (make-stack char=?)])
                 (iterate s* (lambda (i c)
@@ -58,31 +68,13 @@ TODO
               (let ([stk (make-stack)])
                 (for-each (lambda (x)
                             (if (is-op? x)
-                                (let ([ar (get-arity x)])
+                                (let ([ar (get-arity x)]
+                                      [op (get-op x)])
                                   (case ar
-                                    [(1) (let ([x1 (stack-pop! stk)])
-                                           (stack-push! stk
-                                                        (case x
-                                                          [(#\!)
-                                                           (if (and (integer? x1) (>= x1 0))
-                                                               (let fact ([res 1]
-                                                                          [n x1])
-                                                                 (if (= n 0)
-                                                                     res
-                                                                     (fact (* res n) (sub1 n))))
-                                                               (errorf "calc" "factorial cannot work on ~a" n))]
-                                                          [else (errorf "calc" "unknown op: ~a" x)])))]
-                                    [(2) (let ([x1 (stack-pop! stk)]
-                                               [x2 (stack-pop! stk)])
-                                           (stack-push! stk
-                                                        (case x
-                                                          [(#\+) (+ x1 x2)]
-                                                          [(#\-) (- x1 x2)]
-                                                          [(#\*) (* x1 x2)]
-                                                          [(#\/) (/ x1 x2)]
-                                                          [(#\%) (modulo x1 x2)]
-                                                          [(#\^) (expt x1 x2)]
-                                                          [else (errorf "calc" "unknown op: ~a" x)])))]
+                                    [(1) (stack-push! stk (op (stack-pop! stk)))]
+                                    ;; Here we assume the order of evaluation of arguments is left-to-right,
+                                    ;; though RnRs says we shouldn't do so.
+                                    [(2) (stack-push! stk (op (stack-pop! stk) (stack-pop! stk)))]
                                     [else (errorf "calc" "unknown arity for ~a" x)]))
                                 (stack-push! stk x)))
                           ls)
@@ -152,8 +144,8 @@ TODO
                                       (stack-push! ops c)
                                       (loop (add1 i) (cdr in)
                                             (append (append out `(,(string->number num))) op*) "")))))])))))))
-          (valid-chars?)
-          (valid-parens?)
+          (check-chars)
+          (check-parens)
           (evaluate (to-RPN)))
         (errorf "calc" "invalid expression: ~a" s))))
 
