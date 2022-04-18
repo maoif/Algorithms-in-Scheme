@@ -1,6 +1,10 @@
 #|
 (quick-sort! pred ls)
 Sort on list or vector a using quick-sort, returns sorted list or vector.
+
+(quick-sort pred ls)
+Non-destructive version on lists.
+
 |#
 
 (define quick-sort!
@@ -10,7 +14,7 @@ Sort on list or vector a using quick-sort, returns sorted list or vector.
           (let ([pivot (vector-ref ls e)]
                 [i (sub1 s)])
             (do ([j s (add1 j)])
-                ;; note that when j==e-1(the element before the pivot),
+                ;; note that when j == e-1(the element before the pivot),
                 ;; the loop still needs to run
                 ((= j e)
                  (swap! ls (add1 i) e)
@@ -37,3 +41,16 @@ Sort on list or vector a using quick-sort, returns sorted list or vector.
                       ls
                       (vector (vector-ref ls 1) (vector-ref ls 0)))]
          [else (begin (inner-sort ls 0 (sub1 n)) ls)]))))
+
+(define quick-sort
+  (lambda (pred ls)
+    (if (list? ls)
+        (if (or (eq? pred <) (eq? pred >))
+            (let loop ([ls ls])
+              (if (null? ls) ls
+                  (let-values ([(L R) (partition (lambda (x) (pred x (car ls))) ls)])
+                    `(,@(loop L) ,(car R) ,@(loop (cdr R))))))
+            ;; The reason is that partition puts the pivot is L when given <= or
+            ;; >=, which makes R null sometimes.
+            (errorf "quick-sort" "pred has to be either > or <"))
+        (errorf "quick-sort" "not a list: ~a" ls))))
