@@ -45,12 +45,9 @@ Non-destructive version on lists.
 (define quick-sort
   (lambda (pred ls)
     (if (list? ls)
-        (if (or (eq? pred <) (eq? pred >))
-            (let loop ([ls ls])
-              (if (null? ls) ls
-                  (let-values ([(L R) (partition (lambda (x) (pred x (car ls))) ls)])
-                    `(,@(loop L) ,(car R) ,@(loop (cdr R))))))
-            ;; The reason is that partition puts the pivot is L when given <= or
-            ;; >=, which makes R null sometimes.
-            (errorf "quick-sort" "pred has to be either > or <"))
+        (let loop ([ls ls])
+          (if (null? ls) ls
+              (let ([p (car ls)])
+                (let-values ([(L R) (partition (lambda (x) (pred x p)) (cdr ls))])
+                  `(,@(loop L) ,p ,@(loop R))))))
         (errorf "quick-sort" "not a list: ~a" ls))))
