@@ -28,10 +28,17 @@ In the case where stack in not emptied, the last element is included.
 Similar to above, however the last element is popped but not included.
 
 (stack-pop!-all s)
-Pop all elements of s into a list.
+Pop all elements of `s` into a list.
+
+(stack-pop!-to s e)
+Pop all elements until `e` is encountered, which will not be popped.
+Returns #f if no `e` doesn't exist.
 
 (stack-peek s)
 Return the stack top but not remove it.
+
+(stack-contains? s e)
+Returns whether stack contains `e`.
 
 (stack-load s)
 Returns the number of elements currently in the stack.
@@ -43,7 +50,7 @@ Note that currently we don't have type check.
 |#
 
 (module (make-stack stack-empty? stack-load stack-push! stack-pop! stack-pop!-until
-                    stack-pop!-unti stack-pop!-all stack-peek)
+                    stack-pop!-unti stack-pop!-all stack-pop!-to stack-contains? stack-peek)
         (define-record-type (stack mk-stack stack?)
           (fields pred (mutable stk)))
 
@@ -116,6 +123,29 @@ Note that currently we don't have type check.
           (lambda (s) (let ([stk (stack-stk s)])
                         (stack-stk-set! s '())
                         stk)))
+
+        (define stack-pop!-to
+          (lambda (s e)
+            (let ([stk (stack-stk s)]
+                  [pred (stack-pred s)])
+              (if (null? stk)
+                  #f
+                  (let loop ([res '()]
+                             [stk stk])
+                    (if (null? stk)
+                        #f
+                        (let ([v (car stk)])
+                          (if (pred e v)
+                              (begin (let ([res (reverse res)])
+                                       (stack-stk-set! s stk)
+                                       res))
+                              (loop (cons v res) (cdr stk))))))))))
+
+        (define stack-contains?
+          (lambda (s e)
+            (let ([stk (stack-stk s)]
+                  [pred (stack-pred s)])
+              (memp (lambda (x) (pred x e)) stk))))
 
         (define stack-peek
           (lambda (s)
