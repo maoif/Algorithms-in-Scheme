@@ -36,6 +36,12 @@
         ((= i end))
       (proc i (vector-ref ls i)))))
 
+(define string-iterate
+  (lambda (s proc)
+    (do ([i 0 (add1 i)])
+        ((= i (string-length s)))
+      (proc i (string-ref s i)))))
+
 (define get-extreme
   (lambda (ls pred)
     (cond [(list? ls) (let ([max (car ls)])
