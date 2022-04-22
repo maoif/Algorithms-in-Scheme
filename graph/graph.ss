@@ -96,11 +96,11 @@ actually represent.
 
   (define-record-type (graph mkgraph graph?)
     (fields (mutable order) (mutable size) directed? weighted?
-            ;; vector of adjacency lists;
-            ;; element is #f if the vectex doesn't exist
+            ;; Vector of adjacency lists; element is #f if the vectex doesn't exist.
+            ;; For weighted graph, each element in v* is: ((neighbor0 . w0) (neighbor1 . w1) ...)
             (mutable v*)
-            ;; degree of each vertex; length must be the same as v*
-            ;; for directed graph, every element of d* is of the form (in-degree . out-degree)
+            ;; Degree of each vertex; length must be the same as v*.
+            ;; For directed graph, every element of d* is of the form (in-degree . out-degree).
             (mutable d*)))
 
   (define make-graph
@@ -569,17 +569,17 @@ actually represent.
           (call-with-output-file path
             (lambda (p)
               (let* ([d? (graph-directed? g)]
-                     [to (if d? "->" "--")]
-                     [edges (graph-edges g)])
-                (put-string p (if d? "digraph {~n" "graph {~n"))
-                (put-string p "node [fontname=monospace];~n")
-                (weighted? g)
-                (format "~a ~a ~a[label=\"~a\"];~n" v to x w)
-                (format "~a ~a ~a;~n" v to x)
-
-
-                (put-string p "}"))
-              )))))
+                     [to (if d? "->" "--")])
+                (put-string p (if d? "digraph {~n" "graph {"))
+                (fresh-line p)
+                (put-string p "node [fontname=monospace];")
+                (fresh-line p)
+                (for-each (lambda (e)
+                            (if (weighted? g)
+                                (format "~a ~a ~a[label=\"~a\"];~n" (car e) to (cadr e) (caddr e))
+                                (format "~a ~a ~a;~n" (car e) to (cdr e))))
+                          (car (graph-edges g)))
+                (put-string p "}")))))))
 
   (include "shortest-path.ss")
   (include "topological-sort.ss")
