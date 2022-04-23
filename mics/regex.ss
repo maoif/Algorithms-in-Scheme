@@ -17,7 +17,6 @@ Determines whether string `text` has patterns decribed by regex `r`.
 Converts regex object `r` to a dot file for Graphviz visualization.
 
 ;;; Implementation
-
 This implementation simply illustrates the mechanism of regex.
 There is no back reference, numbered matches and other fancy features.
 
@@ -40,6 +39,8 @@ TODO
 Merge duplicated nodes as in ab|abc|abcd.
 
 |#
+
+(module (make-regex regex-match regex-contains? regex-to-dot)
 
 (include "../tools.ss")
 (include "../data-structure/stack.ss")
@@ -453,7 +454,7 @@ Merge duplicated nodes as in ab|abc|abcd.
       (debug (printf "pattern: ~a~n" p)
              (printf "tok: ~a~n" tok)
              (printf "NFA: ~a~n~n" nfa))
-      nfa)))
+      (NFA-eliminate-epsilon nfa))))
 
 (define regex-match
   (lambda (r text)
@@ -574,6 +575,8 @@ Merge duplicated nodes as in ab|abc|abcd.
           (printf "regex-to-dot: written ~a~n" path))
         (errorf "regex-to-dot" "not a regex object: ~a" r))))
 
+) ;; module
+
 #|
 (make-regex "a")
 (make-regex "ab")
@@ -612,40 +615,38 @@ Merge duplicated nodes as in ab|abc|abcd.
 (for-each (lambda (x)
             (regex-to-dot x (format "nfa-~a.dot" count))
             (set! count (add1 count)))
-          `(,(NFA-eliminate-epsilon (make-regex "a"))
-            ,(NFA-eliminate-epsilon (make-regex "ab"))
-            ,(NFA-eliminate-epsilon (make-regex "abc"))
-            ,(NFA-eliminate-epsilon (make-regex "a|b"))
-            ,(NFA-eliminate-epsilon (make-regex "a|b|c"))
-            ,(NFA-eliminate-epsilon (make-regex "[a-zA-Z0-9]"))
-            ,(NFA-eliminate-epsilon (make-regex "[0-9]"))
-            ,(NFA-eliminate-epsilon (make-regex "[c-h]"))
-            ,(NFA-eliminate-epsilon (make-regex "[-xyz]"))
-            ,(NFA-eliminate-epsilon (make-regex "(ab)c"))
-            ,(NFA-eliminate-epsilon (make-regex "(a|b)"))
-            ,(NFA-eliminate-epsilon (make-regex "ab|(cd|e)"))
-            ,(NFA-eliminate-epsilon (make-regex "a*"))
-            ,(NFA-eliminate-epsilon (make-regex "a+"))
-            ,(NFA-eliminate-epsilon (make-regex "."))
-            ,(NFA-eliminate-epsilon (make-regex ".+"))
-            ,(NFA-eliminate-epsilon (make-regex "\\(scheme\\)"))
-            ,(NFA-eliminate-epsilon (make-regex "[a-g]*"))
-            ,(NFA-eliminate-epsilon (make-regex "[a-g]+"))
-            ,(NFA-eliminate-epsilon (make-regex "(ab)*"))
-            ,(NFA-eliminate-epsilon (make-regex "(ab)*(cd)+"))
-            ,(NFA-eliminate-epsilon (make-regex "abc|def|(ha)+|yes"))
-            ,(NFA-eliminate-epsilon (make-regex "a?"))
-            ,(NFA-eliminate-epsilon (make-regex "[a-g]?"))
-            ,(NFA-eliminate-epsilon (make-regex "ab|([ch]at)*")))
+          `(,(make-regex "a")
+            ,(make-regex "ab")
+            ,(make-regex "abc")
+            ,(make-regex "a|b")
+            ,(make-regex "a|b|c")
+            ,(make-regex "[a-zA-Z0-9]")
+            ,(make-regex "[0-9]")
+            ,(make-regex "[c-h]")
+            ,(make-regex "[-xyz]")
+            ,(make-regex "(ab)c")
+            ,(make-regex "(a|b)")
+            ,(make-regex "ab|(cd|e)")
+            ,(make-regex "a*")
+            ,(make-regex "a+")
+            ,(make-regex ".")
+            ,(make-regex ".+")
+            ,(make-regex "\\(scheme\\)")
+            ,(make-regex "[a-g]*")
+            ,(make-regex "[a-g]+")
+            ,(make-regex "(ab)*")
+            ,(make-regex "(ab)*(cd)+")
+            ,(make-regex "abc|def|(ha)+|yes")
+            ,(make-regex "a?")
+            ,(make-regex "[a-g]?")
+            ,(make-regex "ab|([ch]at)*"))
           )
 |#
 
 ;;(regex-match (make-regex "a") "a")
 ;;(regex-match (make-regex "a|b") "abcda")
-;;(regex-match (NFA-eliminate-epsilon (make-regex "a*.d")) "aabcdaaaacd")
-;;(regex-match (NFA-eliminate-epsilon (make-regex "ab*")) "aabbbcdaabaacd")
-;;(regex-match (NFA-eliminate-epsilon (make-regex "b*")) "bbba")
-;;(printf "~a~n" (regex-match (NFA-eliminate-epsilon (make-regex "(ab)*")) "abb1abbbababab53a"))
-;;(printf "~a~n" (regex-match (NFA-eliminate-epsilon (make-regex "abc|def|(ha)+|yes")) "abyesabchadlsdefhahaokey"))
-;;(printf "~a~n" (regex-match (NFA-eliminate-epsilon (make-regex "(ab)?")) "abb1abbbababab53a"))
-;;(printf "~a~n" (regex-match (NFA-eliminate-epsilon (make-regex "jk")) "jiukujkhsj"))
+;;(regex-match (make-regex "a*.d") "aabcdaaaacd")
+;;(printf "~a~n" (regex-match (make-regex "(ab)*") "abb1abbbababab53a"))
+;;(printf "~a~n" (regex-match (make-regex "abc|def|(ha)+|yes") "abyesabchadlsdefhahaokey"))
+;;(printf "~a~n" (regex-match (make-regex "(ab)?") "abb1abbbababab53a"))
+;;(printf "~a~n" (regex-match (make-regex "jk") "jiukujkhsj"))
