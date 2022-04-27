@@ -1,3 +1,7 @@
+#|
+Some Useful Procedures
+|#
+
 (define random-vector
   (lambda (size range)
     (let ([v (make-vector size)])
