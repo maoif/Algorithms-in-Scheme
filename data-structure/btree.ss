@@ -17,7 +17,7 @@ B-tree
 (btree-empty? T)
 
 ;;; Implementation
-This B-tree implementation is taken from [Comer].
+This B-tree implementation is taken from [Cormen].
 
 Unlike binary trees, B-trees have more than two children per node.
 Like binary trees, keys and children in B-tree nodes are also ordered.
