@@ -1,4 +1,7 @@
 #|
+Quick Sort
+
+;;; API
 (quick-sort! pred ls)
 Sort on list or vector a using quick-sort, returns sorted list or vector.
 

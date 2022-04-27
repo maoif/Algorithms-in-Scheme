@@ -1,4 +1,7 @@
 #|
+Merge Sort
+
+;;; API
 (merge-sort!  pred a)
 
 ;;; Implementation
@@ -10,6 +13,7 @@ from left to right, selecting the smaller one and puts into
 the temp vector. If one side is copied out, then copy the other
 side. Finally copy the temp vector to the corresponding range
 in the original one.
+
 |#
 (library (merge)
   (export merge-sort!)

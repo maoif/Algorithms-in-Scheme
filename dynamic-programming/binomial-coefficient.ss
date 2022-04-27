@@ -2,7 +2,6 @@
 Binomial Coefficients
 |#
 
-
 (include "../data-structure/table.ss")
 
 (define choose
@@ -22,6 +21,6 @@ Binomial Coefficients
                               (dp-get (sub1 i) j)))))
           (dp-get n k))
         (errorf "choose" "invalid argument(s): ~a choose ~a" n k))))
-(printf "4 choose 2: ~a~n" (choose 4 2))
-(printf "5 choose 2: ~a~n" (choose 5 2))
-(printf "10 choose 6: ~a~n" (choose 10 6))
+;;(printf "4 choose 2: ~a~n" (choose 4 2))
+;;(printf "5 choose 2: ~a~n" (choose 5 2))
+;;(printf "10 choose 6: ~a~n" (choose 10 6))

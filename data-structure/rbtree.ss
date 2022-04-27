@@ -1,6 +1,8 @@
 #|
 Red-black Tree
 
+THIS IS NOT DONE YET
+
 ;;; API
 (make-rbtree [kvs])
 (make-rbtree compare equal [kvs])

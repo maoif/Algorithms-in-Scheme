@@ -1,5 +1,0 @@
-#|
-Priority Queue
-
-;;; API
-|#

@@ -1,6 +1,6 @@
 #|
 AVL tree
-AVL stands its inventors: Adelson-Velsky and Landis
+"AVL" stands for its inventors: Adelson-Velsky and Landis
 
 ;;; API
 (make-avltree compare equal)

@@ -1,4 +1,7 @@
 #|
+Heap Sort
+
+;;; API
 (heap-sort pred ls)
 
 ;;; Implemenation
@@ -8,6 +11,7 @@ we need to do is:
 1. build a new vector of the same length(this would waste some space is the input is large)
 2. recursively extract the top element from the heap into the vector
 3. done
+
 |#
 (include "../data-structure/heap.ss")
 

@@ -9,7 +9,6 @@ Splay Tree
 (sptree-delete! T k)
 (sptree-for-each T proc)
 
-;;; Implementation
 |#
 
 (module (make-sptree sptree-search sptree-insert! sptree-delete! sptree-print sptree-to-dot)

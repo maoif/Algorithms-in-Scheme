@@ -62,4 +62,4 @@ prices of the sub-rods are maximized.
 ;;(cut-rod 3 prices)
 ;;(cut-rod 4 prices)
 ;;(cut-rod 5 prices)
-(cut-rod 23 prices)
+;;(cut-rod 23 prices)

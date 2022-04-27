@@ -1,4 +1,7 @@
 #|
+Counting Sort
+
+;;; API
 (counting-sort! pred ls)
 
 ;;; Implemenation
@@ -9,6 +12,7 @@
 3. scan through the input vector and update each element's
    number of occurence in aux
 4. scan through aux and place the numbers back into the input vector
+
 |#
 (define counting-sort!
     (lambda (pred ls)
